@@ -81,14 +81,96 @@ export async function POST(
       )
     }
 
-    // Check all QC tests passed
+    if (batch.status === 'QUARANTINE') {
+      return NextResponse.json(
+        { success: false, error: { code: 'BATCH_QUARANTINED', message: 'Cannot release a quarantined batch. Resolve all deviations first.' } },
+        { status: 400 }
+      )
+    }
+
+    if (batch.status === 'REJECTED') {
+      return NextResponse.json(
+        { success: false, error: { code: 'BATCH_REJECTED', message: 'Cannot release a rejected batch' } },
+        { status: 400 }
+      )
+    }
+
+    // ── Pre-release validation checklist ──────────────────────────────────
+    const validationErrors: { check: string; message: string }[] = []
+
+    // 1. Check at least 1 material exists
+    const materialsResult = await query(
+      `SELECT COUNT(*) as cnt FROM batch_materials WHERE batch_id = $1`,
+      [id]
+    )
+    if (parseInt(materialsResult.rows[0].cnt) === 0) {
+      validationErrors.push({ check: 'materials', message: 'At least 1 material must be added to the Bill of Materials' })
+    }
+
+    // 2. Check at least 1 step exists and all steps are signed (COMPLETED)
+    const stepsResult = await query(
+      `SELECT COUNT(*) as total, COUNT(CASE WHEN status = 'COMPLETED' THEN 1 END) as completed
+       FROM batch_steps WHERE batch_id = $1`,
+      [id]
+    )
+    const totalSteps = parseInt(stepsResult.rows[0].total)
+    const completedSteps = parseInt(stepsResult.rows[0].completed)
+    if (totalSteps === 0) {
+      validationErrors.push({ check: 'steps', message: 'At least 1 manufacturing step must be added' })
+    } else if (completedSteps < totalSteps) {
+      validationErrors.push({ check: 'steps_signed', message: `${totalSteps - completedSteps} of ${totalSteps} steps are not yet signed/completed` })
+    }
+
+    // 3. Check all required QC tests from template are entered
+    const requiredTemplates = await query(
+      `SELECT t.test_name FROM product_qc_templates t
+       WHERE t.product_id = $1 AND t.required = true
+       AND NOT EXISTS (
+         SELECT 1 FROM batch_qc_tests q WHERE q.batch_id = $2 AND q.test_name = t.test_name
+       )`,
+      [batch.product_id, id]
+    )
+    if (requiredTemplates.rows.length > 0) {
+      const missing = requiredTemplates.rows.map((r: any) => r.test_name).join(', ')
+      validationErrors.push({ check: 'qc_templates', message: `Required QC tests missing: ${missing}` })
+    }
+
+    // 4. Check all QC tests PASS
     const failedTests = await query(
       `SELECT test_name FROM batch_qc_tests WHERE batch_id = $1 AND pass_fail = 'FAIL'`,
       [id]
     )
     if (failedTests.rows.length > 0) {
+      const failed = failedTests.rows.map((r: any) => r.test_name).join(', ')
+      validationErrors.push({ check: 'qc_results', message: `QC test(s) failed: ${failed}` })
+    }
+
+    // 5. Check no OPEN Critical or Major deviations
+    const openDeviations = await query(
+      `SELECT severity, COUNT(*) as cnt FROM batch_deviations
+       WHERE batch_id = $1 AND severity IN ('CRITICAL', 'MAJOR')
+       AND (status IS NULL OR status NOT IN ('RESOLVED', 'CLOSED'))
+       GROUP BY severity`,
+      [id]
+    )
+    if (openDeviations.rows.length > 0) {
+      const devDetails = openDeviations.rows.map((r: any) => `${r.cnt} ${r.severity}`).join(', ')
+      validationErrors.push({ check: 'deviations', message: `Unresolved deviations: ${devDetails}` })
+    }
+
+    // 6. Check at least 1 environmental reading exists
+    const envResult = await query(
+      `SELECT COUNT(*) as cnt FROM batch_environmental WHERE batch_id = $1`,
+      [id]
+    )
+    if (parseInt(envResult.rows[0].cnt) === 0) {
+      validationErrors.push({ check: 'environmental', message: 'At least 1 environmental monitoring reading must be recorded' })
+    }
+
+    // Return validation errors if any check fails
+    if (validationErrors.length > 0) {
       return NextResponse.json(
-        { success: false, error: { code: 'QC_TESTS_FAILED', message: `Cannot release: ${failedTests.rows.length} QC test(s) failed` } },
+        { success: false, error: { code: 'RELEASE_VALIDATION_FAILED', message: 'Pre-release validation failed', validation_errors: validationErrors } },
         { status: 400 }
       )
     }
