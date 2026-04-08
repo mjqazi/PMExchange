@@ -44,7 +44,7 @@ export default function CreateBatch() {
           if (profileData?.data?.products && Array.isArray(profileData.data.products)) {
             setProducts(profileData.data.products.map((p: Record<string, unknown>) => ({
               id: String(p.id || ''),
-              name: `${p.inn_name || p.product_inn || p.name || ''} ${p.strength || ''} (${p.dosage_form || ''})`.trim(),
+              name: `${p.inn_name || p.product_inn || p.name || ''} ${p.strength || ''}`.trim(),
               inn: String(p.inn_name || p.product_inn || p.inn || ''),
               strength: String(p.strength || ''),
               dosage_form: String(p.dosage_form || ''),

@@ -26,6 +26,7 @@ const navItems = [
   { label: 'KYB Queue', href: '/admin/kyb', icon: '\u25A0', badge: '3' },
   { section: 'Entities' },
   { label: 'Sellers', href: '/admin/sellers', icon: '\u25A0' },
+  { label: 'Drug Dictionary', href: '/admin/drug-dictionary', icon: '\u25A0' },
   { label: 'Buyers', href: '/admin/buyers', icon: '\u25A0' },
   { section: 'Operations' },
   { label: 'Disputes', href: '/admin/disputes', icon: '\u25A0', badge: '1' },

@@ -30,6 +30,7 @@ const navItems = [
   { section: 'Compliance ERP' },
   { label: 'Dashboard', href: '/seller/dashboard', icon: '\u25A0' },
   { label: 'Onboarding', href: '/seller/onboarding', icon: '\u25A1', badge: 'G2' },
+  { label: 'Products', href: '/seller/products', icon: '\u25A0' },
   { label: 'Batches (eBMR)', href: '/seller/batches', icon: '\u25A0' },
   { label: 'DRAP Documents', href: '/seller/drap', icon: '\u25A0' },
   { section: 'Marketplace' },
