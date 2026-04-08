@@ -39,8 +39,8 @@ export default function SellerBatches() {
           const items = Array.isArray(d.data) ? d.data : d.data.items || [];
           if (items.length > 0) {
             const mapped = items.map((b: Record<string, unknown>) => ({
-              id: String(b.id || b.batch_number || ''),
-              batch: String(b.batch_number || b.batch_no || b.id || ''),
+              id: String(b.id || b.batch_no || b.batch_number || ''),
+              batch: String(b.batch_no || b.batch_number || b.id || ''),
               product: b.product_inn ? `${b.product_inn} ${b.strength || ''}`.trim() : String(b.product_name || b.product || ''),
               mfg: String(b.mfg_date || b.manufacturing_date || b.manufacture_date || ''),
               expiry: String(b.expiry_date || ''),

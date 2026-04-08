@@ -308,20 +308,24 @@ export default function BatchDetail() {
           const batch = data.batch || data;
 
           if (batch) {
-            setBatchTitle(`eBMR \u2014 ${batch.batch_number || batchId}`);
-            if (batch.product_name) setProductDesc(`${batch.product_name}${batch.drap_reg ? ` \u00B7 DRAP Reg: ${batch.drap_reg}` : ''}`);
+            setBatchTitle(`eBMR \u2014 ${batch.batch_no || batch.batch_number || batchId}`);
+            const productName = batch.product_inn
+              ? `${batch.product_inn} ${batch.brand_name ? `(${batch.brand_name})` : ''} ${batch.strength || ''} ${batch.dosage_form || ''}`.replace(/\s+/g, ' ').trim()
+              : batch.product_name || '';
+            if (productName) setProductDesc(`${productName}${batch.drap_reg_no ? ` \u00B7 DRAP Reg: ${batch.drap_reg_no}` : (batch.drap_reg ? ` \u00B7 DRAP Reg: ${batch.drap_reg}` : '')}`);
             if (batch.status) setBatchStatus(batch.status);
             if (batch.product_id) setProductId(batch.product_id);
 
+            const yieldPct = batch.yield_variance_pct != null ? batch.yield_variance_pct : batch.yield_percent;
             const newHeader: HeaderItem[] = [
-              { label: 'Batch no.:', value: batch.batch_number || batchId, mono: true },
+              { label: 'Batch no.:', value: batch.batch_no || batch.batch_number || batchId, mono: true },
               { label: 'Batch size:', value: batch.batch_size ? `${Number(batch.batch_size).toLocaleString()} ${batch.dosage_form || 'tablets'}` : DEMO_HEADER_INFO[1].value },
-              { label: 'Yield actual:', value: batch.yield_actual ? `${Number(batch.yield_actual).toLocaleString()} (${batch.yield_percent || ''}%)` : DEMO_HEADER_INFO[2].value },
-              { label: 'Shelf life:', value: batch.shelf_life || DEMO_HEADER_INFO[3].value },
-              { label: 'Mfg. date:', value: batch.mfg_date || batch.manufacturing_date || DEMO_HEADER_INFO[4].value },
+              { label: 'Yield actual:', value: batch.yield_actual ? `${Number(batch.yield_actual).toLocaleString()} (${yieldPct != null ? yieldPct : ''}%)` : DEMO_HEADER_INFO[2].value },
+              { label: 'Shelf life:', value: batch.shelf_life_months ? `${batch.shelf_life_months} months` : (batch.shelf_life || DEMO_HEADER_INFO[3].value) },
+              { label: 'Mfg. date:', value: batch.manufacture_date || batch.mfg_date || batch.manufacturing_date || DEMO_HEADER_INFO[4].value },
               { label: 'Expiry date:', value: batch.expiry_date || DEMO_HEADER_INFO[5].value },
               { label: 'Yield theoretical:', value: batch.yield_theoretical ? Number(batch.yield_theoretical).toLocaleString() : DEMO_HEADER_INFO[6].value },
-              { label: 'Variance %:', value: batch.variance || DEMO_HEADER_INFO[7].value, valueColor: batch.variance_in_spec !== false ? 'var(--pmx-green)' : 'var(--pmx-red)' },
+              { label: 'Variance %:', value: batch.yield_variance_pct != null ? `${batch.yield_variance_pct}%` : (batch.variance || DEMO_HEADER_INFO[7].value), valueColor: batch.variance_in_spec !== false ? 'var(--pmx-green)' : 'var(--pmx-red)' },
             ];
             setHeaderInfo(newHeader);
           }
@@ -329,40 +333,40 @@ export default function BatchDetail() {
           if (data.materials && Array.isArray(data.materials) && data.materials.length > 0) {
             setMaterials(data.materials.map((m: Record<string, unknown>) => ({
               id: String(m.id || ''),
-              type: String(m.type || m.material_type || 'Excipient'),
-              typeClass: String(m.type || m.material_type || '').toLowerCase() === 'api' ? 'info' : 'neutral',
-              name: String(m.name || m.material_name || ''),
-              supplier: String(m.supplier || m.supplier_name || ''),
-              lot: String(m.lot || m.lot_number || ''),
-              qty: String(m.qty || m.quantity || ''),
+              type: String(m.material_type || m.type || 'Excipient'),
+              typeClass: String(m.material_type || m.type || '').toLowerCase() === 'api' ? 'info' : 'neutral',
+              name: String(m.material_name || m.name || ''),
+              supplier: String(m.supplier_name || m.supplier || ''),
+              lot: String(m.lot_no || m.lot || m.lot_number || ''),
+              qty: String(m.quantity_used || m.qty || m.quantity || ''),
               unit: String(m.unit || 'g'),
-              coaRef: String(m.coa_ref || m.supplier_coa_ref || ''),
+              coaRef: String(m.supplier_coa_ref || m.coa_ref || ''),
             })));
           }
 
           if (data.steps && Array.isArray(data.steps) && data.steps.length > 0) {
             setSteps(data.steps.map((s: Record<string, unknown>, i: number) => ({
-              step: Number(s.step_number || s.step || i + 1),
+              step: Number(s.step_no || s.step_number || s.step || i + 1),
               desc: String(s.description || s.desc || ''),
-              operator: String(s.operator || s.operator_name || ''),
-              equipment: String(s.equipment || s.equipment_id || ''),
-              params: String(s.params || s.process_params || ''),
+              operator: String(s.operator_name || s.operator || ''),
+              equipment: String(s.equipment_id || s.equipment || ''),
+              params: typeof s.process_params === 'object' && s.process_params !== null ? JSON.stringify(s.process_params) : String(s.process_params || s.params || ''),
               time: String(s.signed_at || s.time || ''),
-              signed: Boolean(s.signed || s.signed_at),
-              signer: String(s.signer || s.signed_by || ''),
-              hash: String(s.hash || s.signature_hash || ''),
+              signed: Boolean(s.signed || s.signed_at || s.status === 'COMPLETED'),
+              signer: String(s.signed_by || s.signer || ''),
+              hash: String(s.signature_hash || s.hash || ''),
             })));
           }
 
           if (data.qc_tests && Array.isArray(data.qc_tests) && data.qc_tests.length > 0) {
             setQcTests(data.qc_tests.map((t: Record<string, unknown>) => ({
               id: String(t.id || ''),
-              name: String(t.name || t.test_name || ''),
-              method: String(t.method || t.method_reference || ''),
-              spec: String(t.spec || t.specification || ''),
-              result: String(t.result || ''),
-              unit: String(t.unit || ''),
-              verdict: String(t.verdict || t.pass_fail || 'PASS'),
+              name: String(t.test_name || t.name || ''),
+              method: String(t.method_reference || t.method || ''),
+              spec: String(t.specification || t.spec || ''),
+              result: String(t.result_value || t.result || ''),
+              unit: String(t.result_unit || t.unit || ''),
+              verdict: String(t.pass_fail || t.verdict || 'PASS'),
               saved: true,
             })));
           }
@@ -370,13 +374,13 @@ export default function BatchDetail() {
           if (data.environmental && Array.isArray(data.environmental) && data.environmental.length > 0) {
             setEnvData(data.environmental.map((e: Record<string, unknown>) => ({
               id: String(e.id || ''),
-              time: String(e.time || e.recorded_at || ''),
-              area: String(e.area || e.production_area || ''),
-              temp: String(e.temp || e.temperature || ''),
-              humidity: String(e.humidity || ''),
-              pressure: String(e.pressure || e.diff_pressure || ''),
+              time: String(e.recorded_at || e.time || ''),
+              area: String(e.production_area || e.area || ''),
+              temp: String(e.temperature_c ?? e.temp ?? e.temperature ?? ''),
+              humidity: String(e.humidity_pct ?? e.humidity ?? ''),
+              pressure: String(e.differential_pressure_pa ?? e.diff_pressure ?? e.pressure ?? ''),
               withinSpec: (e.within_spec as boolean) ?? (e.withinSpec as boolean) ?? true,
-              by: String(e.recorded_by || e.by || ''),
+              by: String(e.recorded_by_name || e.recorded_by || e.by || ''),
             })));
           }
 
@@ -430,14 +434,14 @@ export default function BatchDetail() {
           material_type: matForm.type,
           material_name: matForm.name,
           supplier_name: matForm.supplier,
-          lot_number: matForm.lot,
-          quantity: matForm.qty,
+          lot_no: matForm.lot,
+          quantity_used: matForm.qty,
           unit: matForm.unit,
           supplier_coa_ref: matForm.coaRef,
         }),
       });
       const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.error || 'Failed to add material');
+      if (!res.ok || !data.success) throw new Error(data.error?.message || (typeof data.error === 'string' ? data.error : 'Failed to add material'));
 
       const newMat: Material = {
         id: data.data?.id,
@@ -470,7 +474,7 @@ export default function BatchDetail() {
     try {
       const res = await fetch(`/api/batches/${batchId}/materials/${mat.id}`, { method: 'DELETE' });
       const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.error || 'Failed to delete');
+      if (!res.ok || !data.success) throw new Error(data.error?.message || (typeof data.error === 'string' ? data.error : 'Failed to delete'));
       setMaterials((prev) => prev.filter((_, i) => i !== index));
     } catch (err: unknown) {
       setMatError(err instanceof Error ? err.message : 'Failed to delete material');
@@ -493,14 +497,14 @@ export default function BatchDetail() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          step_number: nextStepNo,
+          step_no: nextStepNo,
           description: stepForm.desc,
           equipment_id: stepForm.equipment,
           process_params: stepForm.params,
         }),
       });
       const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.error || 'Failed to add step');
+      if (!res.ok || !data.success) throw new Error(data.error?.message || (typeof data.error === 'string' ? data.error : 'Failed to add step'));
 
       const newStep: Step = {
         step: nextStepNo,
@@ -547,7 +551,7 @@ export default function BatchDetail() {
     try {
       const res = await fetch(`/api/products/${productId}/qc-templates`);
       const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.error || 'Failed to load templates');
+      if (!res.ok || !data.success) throw new Error(data.error?.message || (typeof data.error === 'string' ? data.error : 'Failed to load templates'));
 
       const templates = Array.isArray(data.data) ? data.data : data.data?.items || [];
       if (templates.length === 0) throw new Error('No QC templates found for this product');
@@ -588,13 +592,13 @@ export default function BatchDetail() {
           test_name: test.name,
           method_reference: test.method,
           specification: test.spec,
-          result: test.result,
+          result_value: test.result,
           result_unit: test.unit,
           pass_fail: test.verdict || 'PASS',
         }),
       });
       const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.error || 'Failed to save QC result');
+      if (!res.ok || !data.success) throw new Error(data.error?.message || (typeof data.error === 'string' ? data.error : 'Failed to save QC result'));
 
       setQcTests((prev) =>
         prev.map((t, i) => i === index ? { ...t, saved: true, id: data.data?.id || t.id } : t)
@@ -636,15 +640,15 @@ export default function BatchDetail() {
         body: JSON.stringify({
           production_area: envForm.area,
           recorded_at: ts,
-          temperature: parseFloat(envForm.temp),
-          humidity: envForm.humidity ? parseFloat(envForm.humidity) : null,
-          diff_pressure: envForm.pressure ? parseFloat(envForm.pressure) : null,
+          temperature_c: parseFloat(envForm.temp),
+          humidity_pct: envForm.humidity ? parseFloat(envForm.humidity) : null,
+          differential_pressure_pa: envForm.pressure ? parseFloat(envForm.pressure) : null,
           within_spec: envForm.withinSpec,
           notes: envForm.notes,
         }),
       });
       const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.error || 'Failed to add reading');
+      if (!res.ok || !data.success) throw new Error(data.error?.message || (typeof data.error === 'string' ? data.error : 'Failed to add reading'));
 
       const timeStr = new Date(ts).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
       setEnvData((prev) => [...prev, {
@@ -689,7 +693,7 @@ export default function BatchDetail() {
         }),
       });
       const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.error || 'Failed to report deviation');
+      if (!res.ok || !data.success) throw new Error(data.error?.message || (typeof data.error === 'string' ? data.error : 'Failed to report deviation'));
 
       const newDev: Deviation = {
         id: data.data?.id || `DEV-${deviations.length + 1}`,
@@ -743,7 +747,7 @@ export default function BatchDetail() {
         body: JSON.stringify({ password, meaning }),
       });
       const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.error || 'Signature failed');
+      if (!res.ok || !data.success) throw new Error(data.error?.message || (typeof data.error === 'string' ? data.error : 'Signature failed'));
 
       setSteps((prev) =>
         prev.map((s) =>
@@ -757,10 +761,10 @@ export default function BatchDetail() {
       const res = await fetch(`/api/batches/${batchId}/release`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password, meaning }),
+        body: JSON.stringify({ password, signature_meaning: meaning }),
       });
       const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.error || 'Release failed');
+      if (!res.ok || !data.success) throw new Error(data.error?.message || (typeof data.error === 'string' ? data.error : 'Release failed'));
 
       setBatchStatus('RELEASED');
       setSigModal((prev) => ({ ...prev, open: false }));
@@ -784,7 +788,7 @@ export default function BatchDetail() {
         }),
       });
       const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.error || 'Status update failed');
+      if (!res.ok || !data.success) throw new Error(data.error?.message || (typeof data.error === 'string' ? data.error : 'Status update failed'));
 
       setDeviations((prev) =>
         prev.map((d) => {

@@ -44,8 +44,8 @@ export default function CreateBatch() {
           if (profileData?.data?.products && Array.isArray(profileData.data.products)) {
             setProducts(profileData.data.products.map((p: Record<string, unknown>) => ({
               id: String(p.id || ''),
-              name: p.product_inn ? `${p.product_inn} ${p.strength || ''}`.trim() : String(p.name || p.product_name || ''),
-              inn: String(p.product_inn || p.inn || ''),
+              name: `${p.inn_name || p.product_inn || p.name || ''} ${p.strength || ''} (${p.dosage_form || ''})`.trim(),
+              inn: String(p.inn_name || p.product_inn || p.inn || ''),
               strength: String(p.strength || ''),
               dosage_form: String(p.dosage_form || ''),
               shelf_life_months: p.shelf_life_months ? Number(p.shelf_life_months) : undefined,
@@ -127,9 +127,9 @@ export default function CreateBatch() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           product_id: selectedProductId,
-          batch_number: batchNumber,
+          batch_no: batchNumber,
           manufacture_date: mfgDate,
-          expiry_date: expiryDate,
+          expiry_date: expiryDate || mfgDate,
           batch_size: parseInt(batchSize),
           shelf_life_months: shelfLifeMonths ? parseInt(shelfLifeMonths) : undefined,
           yield_theoretical: yieldTheoretical ? parseInt(yieldTheoretical) : parseInt(batchSize),
@@ -139,7 +139,7 @@ export default function CreateBatch() {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        throw new Error(data.error || data.message || 'Failed to create batch');
+        throw new Error(data.error?.message || data.message || (typeof data.error === 'string' ? data.error : 'Failed to create batch'));
       }
 
       const newBatchId = data.data?.id || data.data?.batch_number || batchNumber;

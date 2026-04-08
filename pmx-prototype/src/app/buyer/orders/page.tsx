@@ -79,13 +79,13 @@ export default function BuyerOrdersPage() {
           }
           setOrders(d.data.map((o: Record<string, unknown>) => ({
             id: String(o.id || o.orderId || ''),
-            product: String(o.productName || o.product || ''),
-            seller: String(o.sellerName || o.seller || ''),
-            value: String(o.totalValue || o.value || 'TBD'),
+            product: o.product_inn ? `${o.product_inn} ${o.strength || ''}`.trim() : String(o.productName || o.product || ''),
+            seller: String(o.seller_name || o.sellerName || o.seller || ''),
+            value: o.agreed_price_usd && o.quantity ? `$${(Number(o.agreed_price_usd) * Number(o.quantity)).toLocaleString()}` : String(o.totalValue || o.value || 'TBD'),
             stage: String(o.stage || o.status || ''),
             stageStyle: stageStyleMap[String(o.stage || o.status || '')] || { background: 'var(--pmx-gray-light)', color: 'var(--pmx-gray)' },
-            escrow: String(o.escrowStatus || o.escrow || 'Pending'),
-            escrowStyle: escrowStyleMap[String(o.escrowStatus || o.escrow || 'Pending')] || { background: 'var(--pmx-gray-light)', color: 'var(--pmx-gray)' },
+            escrow: String(o.escrow_status || o.escrowStatus || o.escrow || 'Pending'),
+            escrowStyle: escrowStyleMap[String(o.escrow_status || o.escrowStatus || o.escrow || 'Pending')] || { background: 'var(--pmx-gray-light)', color: 'var(--pmx-gray)' },
             nextAction: o.stage === 'NEGOTIATING'
               ? { type: 'button' as const, text: 'View thread', href: `/buyer/negotiate/${o.id || o.orderId}` }
               : o.stage === 'COMPLETED'
@@ -101,16 +101,37 @@ export default function BuyerOrdersPage() {
     setRatingSubmitting(true)
     setRatingStatus('idle')
     try {
-      const res = await fetch(`/api/orders/${orderId}/ratings`, {
+      // Submit CPR rating
+      const cprRes = await fetch(`/api/orders/${orderId}/ratings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          cpr: cprRatings.map(r => ({ criterion: r.label, score: r.value })),
-          cprc: cprcRatings.map(r => ({ criterion: r.label, score: r.value })),
+          rating_type: 'CPR',
+          on_time_delivery: cprRatings.find(r => r.label === 'On-time delivery')?.value || 3,
+          quantity_accuracy: cprRatings.find(r => r.label === 'Quantity accuracy')?.value || 3,
+          communication: cprRatings.find(r => r.label === 'Communication')?.value || 3,
+          doc_speed: 4,
+          overall_commercial: Math.round(cprRatings.reduce((sum, r) => sum + r.value, 0) / cprRatings.length),
         }),
       })
-      const d = await res.json()
-      setRatingStatus(d.success ? 'success' : 'error')
+      const cprData = await cprRes.json()
+
+      // Submit CPR-C rating
+      const cprcRes = await fetch(`/api/orders/${orderId}/ratings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          rating_type: 'CPR-C',
+          coa_quality: cprcRatings.find(r => r.label === 'CoA quality')?.value || 3,
+          batch_record: cprcRatings.find(r => r.label === 'Batch record quality')?.value || 3,
+          deviation_handling: 4,
+          regulatory_docs: cprcRatings.find(r => r.label === 'Regulatory docs')?.value || 3,
+          overall_compliance: Math.round(cprcRatings.reduce((sum, r) => sum + r.value, 0) / cprcRatings.length),
+        }),
+      })
+      const cprcData = await cprcRes.json()
+
+      setRatingStatus(cprData.success && cprcData.success ? 'success' : 'error')
     } catch {
       setRatingStatus('error')
     } finally {
