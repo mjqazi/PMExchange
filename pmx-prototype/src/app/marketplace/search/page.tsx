@@ -570,9 +570,13 @@ function SearchProductCard({ product, index }: { product: typeof products[0]; in
         justifyContent: 'center',
         position: 'relative',
       }}>
-        <span style={{ fontSize: 40, opacity: 0.3 }}>
-          {product.dosageFormShort === 'Syrup' ? '\uD83E\uDDEA' : '\uD83D\uDC8A'}
-        </span>
+        <img
+          src={product.image}
+          alt={`${product.inn} ${product.strength}`}
+          loading="lazy"
+          style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
+        />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.18) 0%, transparent 50%)' }} />
         {/* Cert badges */}
         <div style={{ position: 'absolute', top: 10, left: 10, display: 'flex', gap: 4 }}>
           {product.certifications.slice(0, 2).map(cert => (

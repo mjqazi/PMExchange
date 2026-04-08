@@ -116,9 +116,13 @@ export default function ProductDetailPage() {
                 justifyContent: 'center',
                 position: 'relative',
               }}>
-                <span style={{ fontSize: 96, opacity: 0.2 }}>
-                  {product.dosageFormShort === 'Syrup' ? '\uD83E\uDDEA' : '\uD83D\uDC8A'}
-                </span>
+                <img
+                  src={product.image}
+                  alt={`${product.inn} ${product.strength}`}
+                  loading="lazy"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
+                />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.22) 0%, transparent 40%)' }} />
                 {/* DRAP + certs */}
                 <div style={{ position: 'absolute', top: 20, left: 20, display: 'flex', gap: 6 }}>
                   <span style={{
@@ -578,7 +582,13 @@ export default function ProductDetailPage() {
                       justifyContent: 'center',
                       position: 'relative',
                     }}>
-                      <span style={{ fontSize: 32, opacity: 0.3 }}>{rp.dosageFormShort === 'Syrup' ? '\uD83E\uDDEA' : '\uD83D\uDC8A'}</span>
+                      <img
+                        src={rp.image}
+                        alt={`${rp.inn} ${rp.strength}`}
+                        loading="lazy"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
+                      />
+                      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.15) 0%, transparent 50%)' }} />
                       <div style={{
                         position: 'absolute', top: 8, right: 8,
                         width: 32, height: 32, borderRadius: '50%',

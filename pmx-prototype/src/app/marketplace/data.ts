@@ -17,6 +17,7 @@ export interface Manufacturer {
   productCount: number;
   suspended?: boolean;
   cqsDimensions: { label: string; value: number; }[];
+  image: string;
 }
 
 export interface Product {
@@ -47,6 +48,7 @@ export interface Product {
   pmxCertified: boolean;
   recentCoA: { batch: string; result: string; date: string; }[];
   qcTests: string[];
+  image: string;
 }
 
 export const manufacturers: Manufacturer[] = [
@@ -65,6 +67,7 @@ export const manufacturers: Manufacturer[] = [
     responseRate: '96%',
     avgResponseTime: '< 4 hours',
     productCount: 4,
+    image: 'https://images.unsplash.com/photo-1563213126-a4273aed2016?w=400&h=300&fit=crop',
     cqsDimensions: [
       { label: 'Batch Completeness', value: 96 },
       { label: 'CoA Accuracy', value: 89 },
@@ -89,6 +92,7 @@ export const manufacturers: Manufacturer[] = [
     responseRate: '89%',
     avgResponseTime: '< 8 hours',
     productCount: 3,
+    image: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=400&h=300&fit=crop',
     cqsDimensions: [
       { label: 'Batch Completeness', value: 85 },
       { label: 'CoA Accuracy', value: 76 },
@@ -113,6 +117,7 @@ export const manufacturers: Manufacturer[] = [
     responseRate: '82%',
     avgResponseTime: '< 12 hours',
     productCount: 3,
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=300&fit=crop',
     cqsDimensions: [
       { label: 'Batch Completeness', value: 78 },
       { label: 'CoA Accuracy', value: 70 },
@@ -137,6 +142,7 @@ export const manufacturers: Manufacturer[] = [
     responseRate: '75%',
     avgResponseTime: '< 24 hours',
     productCount: 1,
+    image: 'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=400&h=300&fit=crop',
     cqsDimensions: [
       { label: 'Batch Completeness', value: 45 },
       { label: 'CoA Accuracy', value: 40 },
@@ -161,6 +167,7 @@ export const products: Product[] = [
     manufacturerId: 'lahore-generics',
     manufacturerName: 'Lahore Generics Ltd.',
     drapRegNo: 'DRAP-074521',
+    image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=300&fit=crop',
     pharmacopoeia: 'BP 2024 / USP 47',
     shelfLife: '36 months',
     storageConditions: 'Store below 30°C in dry place',
@@ -194,6 +201,7 @@ export const products: Product[] = [
     manufacturerId: 'lahore-generics',
     manufacturerName: 'Lahore Generics Ltd.',
     drapRegNo: 'DRAP-074589',
+    image: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&h=300&fit=crop',
     pharmacopoeia: 'USP 47',
     shelfLife: '24 months',
     storageConditions: 'Store below 25°C, protect from light',
@@ -226,6 +234,7 @@ export const products: Product[] = [
     manufacturerId: 'lahore-generics',
     manufacturerName: 'Lahore Generics Ltd.',
     drapRegNo: 'DRAP-074602',
+    image: 'https://images.unsplash.com/photo-1550572017-edd951aa8f72?w=400&h=300&fit=crop',
     pharmacopoeia: 'BP 2024',
     shelfLife: '36 months',
     storageConditions: 'Store below 30°C',
@@ -258,6 +267,7 @@ export const products: Product[] = [
     manufacturerId: 'lahore-generics',
     manufacturerName: 'Lahore Generics Ltd.',
     drapRegNo: 'DRAP-074618',
+    image: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&h=300&fit=crop',
     pharmacopoeia: 'BP 2024 / USP 47',
     shelfLife: '24 months',
     storageConditions: 'Store below 25°C, protect from moisture',
@@ -291,6 +301,7 @@ export const products: Product[] = [
     manufacturerId: 'karachi-pharmacorp',
     manufacturerName: 'Karachi PharmaCorp',
     drapRegNo: 'DRAP-081203',
+    image: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=400&h=300&fit=crop',
     pharmacopoeia: 'BP 2024',
     shelfLife: '36 months',
     storageConditions: 'Store below 30°C in dry place',
@@ -323,6 +334,7 @@ export const products: Product[] = [
     manufacturerId: 'karachi-pharmacorp',
     manufacturerName: 'Karachi PharmaCorp',
     drapRegNo: 'DRAP-081245',
+    image: 'https://images.unsplash.com/photo-1628771065518-0d82f1938462?w=400&h=300&fit=crop',
     pharmacopoeia: 'USP 47',
     shelfLife: '24 months',
     storageConditions: 'Store below 25°C, protect from light & moisture',
@@ -354,6 +366,7 @@ export const products: Product[] = [
     manufacturerId: 'karachi-pharmacorp',
     manufacturerName: 'Karachi PharmaCorp',
     drapRegNo: 'DRAP-081267',
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=300&fit=crop',
     pharmacopoeia: 'BP 2024',
     shelfLife: '36 months',
     storageConditions: 'Store below 30°C, protect from light',
@@ -386,6 +399,7 @@ export const products: Product[] = [
     manufacturerId: 'multan-medgen',
     manufacturerName: 'Multan MedGen Pvt.',
     drapRegNo: 'DRAP-092301',
+    image: 'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=400&h=300&fit=crop',
     pharmacopoeia: 'BP 2024',
     shelfLife: '36 months',
     storageConditions: 'Store below 30°C',
@@ -417,6 +431,7 @@ export const products: Product[] = [
     manufacturerId: 'multan-medgen',
     manufacturerName: 'Multan MedGen Pvt.',
     drapRegNo: 'DRAP-092318',
+    image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&h=300&fit=crop',
     pharmacopoeia: 'BP 2024',
     shelfLife: '36 months',
     storageConditions: 'Store below 30°C',
@@ -448,6 +463,7 @@ export const products: Product[] = [
     manufacturerId: 'multan-medgen',
     manufacturerName: 'Multan MedGen Pvt.',
     drapRegNo: 'DRAP-092335',
+    image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=300&fit=crop',
     pharmacopoeia: 'USP 47',
     shelfLife: '24 months',
     storageConditions: 'Store below 25°C, protect from moisture',
@@ -480,6 +496,7 @@ export const products: Product[] = [
     manufacturerId: 'faisalabad-meds',
     manufacturerName: 'Faisalabad Meds Co.',
     drapRegNo: 'DRAP-099801',
+    image: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&h=300&fit=crop',
     pharmacopoeia: 'BP 2024',
     shelfLife: '36 months',
     storageConditions: 'Store below 30°C',
@@ -510,6 +527,7 @@ export const products: Product[] = [
     manufacturerId: 'lahore-generics',
     manufacturerName: 'Lahore Generics Ltd.',
     drapRegNo: 'DRAP-074650',
+    image: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=400&h=300&fit=crop',
     pharmacopoeia: 'USP 47',
     shelfLife: '24 months',
     storageConditions: 'Store below 25°C, protect from light',
@@ -541,6 +559,7 @@ export const products: Product[] = [
     manufacturerId: 'karachi-pharmacorp',
     manufacturerName: 'Karachi PharmaCorp',
     drapRegNo: 'DRAP-081290',
+    image: 'https://images.unsplash.com/photo-1550572017-edd951aa8f72?w=400&h=300&fit=crop',
     pharmacopoeia: 'BP 2024',
     shelfLife: '24 months',
     storageConditions: 'Store below 25°C, protect from moisture',
@@ -572,6 +591,7 @@ export const products: Product[] = [
     manufacturerId: 'multan-medgen',
     manufacturerName: 'Multan MedGen Pvt.',
     drapRegNo: 'DRAP-092350',
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=300&fit=crop',
     pharmacopoeia: 'BP 2024',
     shelfLife: '36 months',
     storageConditions: 'Store below 30°C',
@@ -603,6 +623,7 @@ export const products: Product[] = [
     manufacturerId: 'karachi-pharmacorp',
     manufacturerName: 'Karachi PharmaCorp',
     drapRegNo: 'DRAP-081310',
+    image: 'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=400&h=300&fit=crop',
     pharmacopoeia: 'USP 47',
     shelfLife: '24 months',
     storageConditions: 'Store below 25°C, protect from light',
