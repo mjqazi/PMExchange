@@ -8,6 +8,7 @@ const SECRET = new TextEncoder().encode(
 // Paths that never require authentication
 const PUBLIC_PATHS = [
   '/',
+  '/login',
   '/api/auth/login',
   '/api/auth/refresh',
 ]
@@ -56,7 +57,7 @@ export async function middleware(request: NextRequest) {
     const token = request.cookies.get('pmx_token')?.value
 
     if (!token) {
-      const loginUrl = new URL('/', request.url)
+      const loginUrl = new URL('/login', request.url)
       return NextResponse.redirect(loginUrl)
     }
 
@@ -66,7 +67,7 @@ export async function middleware(request: NextRequest) {
       const userId = (payload as Record<string, unknown>).userId
 
       if (!userId) {
-        const loginUrl = new URL('/', request.url)
+        const loginUrl = new URL('/login', request.url)
         return NextResponse.redirect(loginUrl)
       }
 
@@ -75,7 +76,7 @@ export async function middleware(request: NextRequest) {
       // The API routes already enforce role-based access
     } catch {
       // Token invalid or expired -- redirect to login
-      const loginUrl = new URL('/', request.url)
+      const loginUrl = new URL('/login', request.url)
       return NextResponse.redirect(loginUrl)
     }
   }

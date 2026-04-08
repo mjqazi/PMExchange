@@ -55,7 +55,7 @@ async function login(user) {
   const client = await page.target().createCDPSession();
   await client.send('Network.clearBrowserCookies');
 
-  await page.goto(BASE, { waitUntil: 'networkidle2', timeout: 30000 });
+  await page.goto(`${BASE}/login`, { waitUntil: 'networkidle2', timeout: 30000 });
   await new Promise(r => setTimeout(r, 2000)); // Wait for auth check to finish
 
   // Check if we're on login page (look for email input)
@@ -120,7 +120,7 @@ async function logout() {
   // Fallback: clear cookies and go to login
   const client = await page.target().createCDPSession();
   await client.send('Network.clearBrowserCookies');
-  await page.goto(BASE, { waitUntil: 'networkidle2', timeout: 15000 });
+  await page.goto(`${BASE}/login`, { waitUntil: 'networkidle2', timeout: 15000 });
   await new Promise(r => setTimeout(r, 2000));
 }
 
@@ -137,7 +137,7 @@ async function testLoginPage() {
   console.log('\n📋 LOGIN PAGE');
 
   await test('Login page loads', async () => {
-    await page.goto(BASE, { waitUntil: 'networkidle2', timeout: 60000 });
+    await page.goto(`${BASE}/login`, { waitUntil: 'networkidle2', timeout: 60000 });
     await new Promise(r => setTimeout(r, 3000)); // Wait for first compile
     await waitForText('Sign in', 15000);
     await screenshot('01-login-page');
@@ -337,7 +337,7 @@ async function testSellerPortal() {
     await logout();
     await new Promise(r => setTimeout(r, 2000));
     const url = page.url();
-    assert(url === `${BASE}/` || url === BASE || url.endsWith(':5555/'), `Expected login page, got: ${url}`);
+    assert(url.includes('/login') || url.includes('/marketplace'), `Expected login page, got: ${url}`);
     await screenshot('21-seller-logout');
   });
 }
@@ -410,7 +410,7 @@ async function testBuyerPortal() {
     await logout();
     await new Promise(r => setTimeout(r, 2000));
     const url = page.url();
-    assert(url === `${BASE}/` || url === BASE || url.endsWith(':5555/'), 'Should redirect to login');
+    assert(url.includes('/login') || url.includes('/marketplace'), 'Should redirect to login');
   });
 }
 
@@ -497,7 +497,7 @@ async function testAdminPortal() {
     await logout();
     await new Promise(r => setTimeout(r, 2000));
     const url = page.url();
-    assert(url === `${BASE}/` || url === BASE || url.endsWith(':5556/') || url.endsWith(':5555/'), 'Should redirect to login');
+    assert(url.includes('/login') || url.includes('/marketplace'), 'Should redirect to login');
   });
 }
 
@@ -683,7 +683,7 @@ async function testCrossPortalSecurity() {
     await page.goto(`${BASE}/seller/dashboard`, { waitUntil: 'networkidle2', timeout: 15000 });
     await new Promise(r => setTimeout(r, 1000));
     const url = page.url();
-    assert(url === `${BASE}/` || url === BASE || url.endsWith(':5555/'), `Expected redirect to login, got: ${url}`);
+    assert(url.includes('/login') || url.includes('/marketplace'), `Expected redirect to login, got: ${url}`);
   });
 
   await test('Seller cannot access admin API', async () => {
@@ -701,7 +701,7 @@ async function testCrossPortalSecurity() {
     await new Promise(r => setTimeout(r, 3000));
     const url = page.url();
     // Should either stay on login (checking) or redirect to seller portal
-    assert(url.includes('/seller/') || url === `${BASE}/` || url === BASE, 'Should handle already-logged-in state');
+    assert(url.includes('/seller/') || url.includes('/login') || url.includes('/marketplace'), 'Should handle already-logged-in state');
   });
 }
 

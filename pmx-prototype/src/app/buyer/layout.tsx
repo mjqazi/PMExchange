@@ -237,7 +237,7 @@ export default function BuyerLayout({ children }: { children: React.ReactNode })
                 <button
                   onClick={async () => {
                     await fetch('/api/auth/logout', { method: 'POST' });
-                    window.location.href = '/';
+                    window.location.href = '/login';
                   }}
                   style={{
                     width: '100%', padding: '10px 14px', fontSize: 12, fontWeight: 500,

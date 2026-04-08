@@ -138,7 +138,7 @@ export default function MarketplaceLayout({ children }: { children: React.ReactN
             </button>
 
             <Link
-              href="/"
+              href="/login"
               className="mk-desktop-nav"
               style={{
                 padding: '9px 20px',
@@ -155,7 +155,7 @@ export default function MarketplaceLayout({ children }: { children: React.ReactN
               Sign In
             </Link>
             <Link
-              href="/"
+              href="/login"
               className="mk-desktop-nav"
               style={{
                 padding: '9px 22px',
@@ -251,10 +251,10 @@ export default function MarketplaceLayout({ children }: { children: React.ReactN
                 ))}
               </div>
               <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <Link href="/" style={{ padding: '12px', textAlign: 'center', fontSize: 14, fontWeight: 600, fontFamily: "'DM Sans', sans-serif", color: '#64748B', border: '1px solid #E2E8F0', borderRadius: 10, textDecoration: 'none' }}>
+                <Link href="/login" style={{ padding: '12px', textAlign: 'center', fontSize: 14, fontWeight: 600, fontFamily: "'DM Sans', sans-serif", color: '#64748B', border: '1px solid #E2E8F0', borderRadius: 10, textDecoration: 'none' }}>
                   Sign In
                 </Link>
-                <Link href="/" style={{ padding: '12px', textAlign: 'center', fontSize: 14, fontWeight: 600, fontFamily: "'DM Sans', sans-serif", color: '#fff', background: '#1D9E75', borderRadius: 10, textDecoration: 'none' }}>
+                <Link href="/login" style={{ padding: '12px', textAlign: 'center', fontSize: 14, fontWeight: 600, fontFamily: "'DM Sans', sans-serif", color: '#fff', background: '#1D9E75', borderRadius: 10, textDecoration: 'none' }}>
                   Register
                 </Link>
               </div>
@@ -377,7 +377,7 @@ export default function MarketplaceLayout({ children }: { children: React.ReactN
               </h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {['Register', 'Submit RFQ', 'Escrow Payments', 'Compliance Reports'].map(item => (
-                  <Link key={item} href="/" style={{ fontSize: 14, fontFamily: "'DM Sans', sans-serif", color: '#94A3B8', textDecoration: 'none' }}>
+                  <Link key={item} href="/login" style={{ fontSize: 14, fontFamily: "'DM Sans', sans-serif", color: '#94A3B8', textDecoration: 'none' }}>
                     {item}
                   </Link>
                 ))}
@@ -391,7 +391,7 @@ export default function MarketplaceLayout({ children }: { children: React.ReactN
               </h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {['About PMX', 'Quality Standards', 'Regulatory Partners', 'Contact Us'].map(item => (
-                  <Link key={item} href="/" style={{ fontSize: 14, fontFamily: "'DM Sans', sans-serif", color: '#94A3B8', textDecoration: 'none' }}>
+                  <Link key={item} href="/login" style={{ fontSize: 14, fontFamily: "'DM Sans', sans-serif", color: '#94A3B8', textDecoration: 'none' }}>
                     {item}
                   </Link>
                 ))}
@@ -413,7 +413,7 @@ export default function MarketplaceLayout({ children }: { children: React.ReactN
             </p>
             <div style={{ display: 'flex', gap: 24 }}>
               {['Privacy', 'Terms', 'Compliance'].map(item => (
-                <Link key={item} href="/" style={{ fontSize: 12, fontFamily: "'DM Sans', sans-serif", color: '#475569', textDecoration: 'none' }}>
+                <Link key={item} href="/login" style={{ fontSize: 12, fontFamily: "'DM Sans', sans-serif", color: '#475569', textDecoration: 'none' }}>
                   {item}
                 </Link>
               ))}
