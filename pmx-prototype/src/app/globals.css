@@ -1,0 +1,208 @@
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+}
+
+@layer base {
+  .theme {
+    --font-heading: 'IBM Plex Sans', var(--font-sans);
+    --font-sans: 'IBM Plex Sans', var(--font-sans);
+  }
+  :root {
+    /* PMX Pharma theme — pharmaceutical precision */
+    --background: #FFFFFF;
+    --foreground: #1A1A18;
+    --card: #FFFFFF;
+    --card-foreground: #1A1A18;
+    --popover: #FFFFFF;
+    --popover-foreground: #1A1A18;
+    --primary: #1D9E75;
+    --primary-foreground: #FFFFFF;
+    --secondary: #F8F7F4;
+    --secondary-foreground: #1A1A18;
+    --muted: #F0EFE9;
+    --muted-foreground: #73726C;
+    --accent: #E1F5EE;
+    --accent-foreground: #0F6E56;
+    --destructive: #A32D2D;
+    --border: rgba(0,0,0,0.08);
+    --input: rgba(0,0,0,0.13);
+    --ring: #1D9E75;
+    --radius: 0.5rem;
+
+    /* PMX custom tokens */
+    --pmx-teal: #1D9E75;
+    --pmx-teal-dark: #0F6E56;
+    --pmx-teal-light: #E1F5EE;
+    --pmx-blue: #185FA5;
+    --pmx-blue-light: #E6F1FB;
+    --pmx-green: #3B6D11;
+    --pmx-green-light: #EAF3DE;
+    --pmx-amber: #BA7517;
+    --pmx-amber-light: #FAEEDA;
+    --pmx-red: #A32D2D;
+    --pmx-red-light: #FCEBEB;
+    --pmx-gray: #5F5E5A;
+    --pmx-gray-light: #F1EFE8;
+    --pmx-bg: #FFFFFF;
+    --pmx-bg2: #F8F7F4;
+    --pmx-bg3: #F0EFE9;
+    --pmx-tx: #1A1A18;
+    --pmx-tx2: #73726C;
+    --pmx-tx3: #A0A09A;
+
+    --sidebar: #FFFFFF;
+    --sidebar-foreground: #1A1A18;
+    --sidebar-primary: #1D9E75;
+    --sidebar-primary-foreground: #FFFFFF;
+    --sidebar-accent: #E1F5EE;
+    --sidebar-accent-foreground: #0F6E56;
+    --sidebar-border: rgba(0,0,0,0.08);
+    --sidebar-ring: #1D9E75;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #1C1C1A;
+      --foreground: #E8E7E0;
+      --card: #242421;
+      --card-foreground: #E8E7E0;
+      --popover: #242421;
+      --popover-foreground: #E8E7E0;
+      --primary: #1D9E75;
+      --primary-foreground: #FFFFFF;
+      --secondary: #2A2A27;
+      --secondary-foreground: #E8E7E0;
+      --muted: #2A2A27;
+      --muted-foreground: #9E9D96;
+      --accent: #0A3D2C;
+      --accent-foreground: #1D9E75;
+      --destructive: #A32D2D;
+      --border: rgba(255,255,255,0.08);
+      --input: rgba(255,255,255,0.13);
+      --ring: #1D9E75;
+
+      --pmx-teal-light: #0A3D2C;
+      --pmx-blue-light: #0C2540;
+      --pmx-green-light: #17290A;
+      --pmx-amber-light: #2E1F04;
+      --pmx-red-light: #2A0F0F;
+      --pmx-gray-light: #2A2A27;
+      --pmx-bg: #1C1C1A;
+      --pmx-bg2: #242421;
+      --pmx-bg3: #2A2A27;
+      --pmx-tx: #E8E7E0;
+      --pmx-tx2: #9E9D96;
+      --pmx-tx3: #636360;
+
+      --sidebar: #242421;
+      --sidebar-foreground: #E8E7E0;
+      --sidebar-primary: #1D9E75;
+      --sidebar-primary-foreground: #FFFFFF;
+      --sidebar-accent: #0A3D2C;
+      --sidebar-accent-foreground: #1D9E75;
+      --sidebar-border: rgba(255,255,255,0.08);
+      --sidebar-ring: #1D9E75;
+    }
+  }
+
+  * {
+    border-color: var(--border);
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* PMX Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.13); border-radius: 2px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* PMX Badge variants */
+.pmx-badge-success { background: var(--pmx-green-light); color: var(--pmx-green); }
+.pmx-badge-warning { background: var(--pmx-amber-light); color: var(--pmx-amber); }
+.pmx-badge-danger { background: var(--pmx-red-light); color: var(--pmx-red); }
+.pmx-badge-info { background: var(--pmx-blue-light); color: var(--pmx-blue); }
+.pmx-badge-neutral { background: var(--pmx-gray-light); color: var(--pmx-gray); }
+.pmx-badge-teal { background: var(--pmx-teal-light); color: var(--pmx-teal); }
+
+/* PMX Progress bar */
+.pmx-progress { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.pmx-progress-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+
+/* PMX CQS badge */
+.cqs-green { background: var(--pmx-green-light); color: var(--pmx-green); border-color: var(--pmx-green); }
+.cqs-amber { background: var(--pmx-amber-light); color: var(--pmx-amber); border-color: var(--pmx-amber); }
+.cqs-red { background: var(--pmx-red-light); color: var(--pmx-red); border-color: var(--pmx-red); }
+
+/* Animations */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out forwards;
+}
+.animate-slide-in-left {
+  animation: slideInLeft 0.3s ease-out forwards;
+}
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* PMX Interactive hover states */
+button:not(:disabled):hover,
+a[role="button"]:hover {
+  filter: brightness(0.95);
+}
+
+/* Primary button hover */
+button[style*="background: var(--pmx-teal)"]:not(:disabled):hover {
+  filter: brightness(1.05);
+}
+
+/* Table row hover */
+tr[style*="cursor: pointer"]:hover td {
+  background: var(--pmx-bg2);
+}
+
+/* Nav link hover in sidebar */
+nav a:not([style*="background: var(--pmx-teal-light)"]):hover {
+  background: var(--pmx-bg2) !important;
+}
+
+/* Clickable card hover */
+.pmx-clickable:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transform: translateY(-1px);
+  transition: all 0.15s ease;
+}
+
+/* Dismiss button for error banners */
+.pmx-dismiss:hover {
+  opacity: 0.7;
+}
