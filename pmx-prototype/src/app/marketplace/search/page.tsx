@@ -164,8 +164,47 @@ function SearchContent() {
     </div>
   );
 
+  const searchJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: `Pharmaceutical Products${query ? ': ' + query : ''}`,
+    numberOfItems: results.length,
+    itemListElement: results.slice(0, 10).map((product, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'Product',
+        name: `${product.inn} ${product.strength}`,
+        url: `https://pmexchange.pk/marketplace/product/${product.id}`,
+        manufacturer: { '@type': 'Organization', name: product.manufacturerName },
+        offers: {
+          '@type': 'AggregateOffer',
+          priceCurrency: 'USD',
+          lowPrice: product.priceLow,
+          highPrice: product.priceHigh,
+        },
+      },
+    })),
+  };
+
+  const searchTitle = query
+    ? `${query} \u2014 Pharmaceutical Products | PMX Pharma Exchange`
+    : 'Browse All Pharmaceutical Products | PMX Pharma Exchange';
+  const searchDescription = query
+    ? `Find ${query} from DRAP-certified Pakistani manufacturers. ${results.length} products found. WHO-GMP verified. Compare prices and quality scores on PMX Pharma Exchange.`
+    : `Browse 200+ export-ready pharmaceutical products from verified Pakistani manufacturers. Filter by category, certification, and CQS score.`;
+
   return (
-    <div style={{ background: '#F8FAFC', minHeight: 'calc(100vh - 72px)' }}>
+    <main style={{ background: '#F8FAFC', minHeight: 'calc(100vh - 72px)' }}>
+      <title>{searchTitle}</title>
+      <meta name="description" content={searchDescription} />
+      <meta property="og:title" content={searchTitle} />
+      <meta property="og:description" content={searchDescription} />
+      <link rel="canonical" href={`https://pmexchange.pk/marketplace/search${query ? `?q=${encodeURIComponent(query)}` : ''}`} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(searchJsonLd) }}
+      />
       {/* Full-width search bar */}
       <div style={{ background: '#FFFFFF', borderBottom: '1px solid #E2E8F0', padding: '20px 32px' }}>
         <form onSubmit={handleSearch} style={{
@@ -437,7 +476,7 @@ function SearchContent() {
           }
         }
       `}</style>
-    </div>
+    </main>
   );
 }
 
@@ -547,7 +586,7 @@ function FilterCheckbox({ label, checked, onChange, count }: {
 // Search product card
 function SearchProductCard({ product, index }: { product: typeof products[0]; index: number }) {
   return (
-    <div
+    <article
       style={{
         background: '#FFFFFF',
         border: '1px solid #E2E8F0',
@@ -667,6 +706,6 @@ function SearchProductCard({ product, index }: { product: typeof products[0]; in
           Request Quote
         </Link>
       </div>
-    </div>
+    </article>
   );
 }

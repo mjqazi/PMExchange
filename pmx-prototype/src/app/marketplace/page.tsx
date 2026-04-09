@@ -64,11 +64,93 @@ export default function MarketplaceLanding() {
 
   const whySection = useInView();
   const howSection = useInView();
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+
+  const faqData = [
+    {
+      question: 'What is PMX Pharma Exchange?',
+      answer: 'PMX Pharma Exchange is Pakistan\'s first compliance-linked B2B pharmaceutical export marketplace. It connects DRAP-certified Pakistani pharmaceutical manufacturers with international buyers across the Middle East, Africa, and Central Asia, providing quality-scored suppliers, escrow-protected transactions, and regulatory compliance documentation.',
+    },
+    {
+      question: 'How does PMX ensure quality?',
+      answer: 'Every manufacturer on PMX must maintain a Composite Quality Score (CQS) calculated from six real-time dimensions: batch completeness, CoA accuracy, deviation rate, supplier qualification, certification status, and delivery performance. Manufacturers scoring below threshold are flagged or suspended, ensuring only quality-verified suppliers remain active.',
+    },
+    {
+      question: 'What certifications do PMX manufacturers hold?',
+      answer: 'Manufacturers on PMX hold DRAP-GMP (mandatory), WHO-GMP, SFDA (Saudi Food and Drug Authority), NMPA (China), ISO 9001:2015, and other international certifications. Each certification is independently validated before a manufacturer is listed on the platform.',
+    },
+    {
+      question: 'How does the escrow system work?',
+      answer: 'All transactions on PMX are protected through PSO escrow services. Buyer funds are held securely until quality-gated milestones are met: order confirmation, batch production completion, CoA verification, and shipment confirmation. Payment is released to the manufacturer only after the buyer confirms receipt of compliant goods.',
+    },
+    {
+      question: 'Which countries can buy from PMX?',
+      answer: 'PMX serves buyers across Saudi Arabia, UAE, Kenya, Nigeria, Sri Lanka, Tanzania, Uganda, Ghana, Myanmar, Afghanistan, Oman, Bahrain, China, and other markets in the Middle East, Africa, and Central Asia. Products listed are export-eligible with appropriate regulatory documentation for each destination.',
+    },
+    {
+      question: 'What is 21 CFR Part 11 compliance?',
+      answer: '21 CFR Part 11 defines FDA criteria for electronic records and electronic signatures. PMX-listed manufacturers with this compliance maintain tamper-proof electronic batch records, full audit trails, role-based access controls, and validated electronic signatures across their manufacturing process.',
+    },
+  ];
+
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqData.map(faq => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
+
+  const therapeuticCategories = [
+    {
+      name: 'Anti-Infectives',
+      drugs: 'Amoxicillin, Ciprofloxacin, Azithromycin, Cefixime, Metronidazole',
+      description: 'Anti-infective medications represent the largest category of Pakistani pharmaceutical exports. Pakistan manufactures WHO-prequalified antibiotics and antimicrobials at competitive price points, serving high-demand markets in Sub-Saharan Africa and Southeast Asia where infectious disease burden remains significant.',
+    },
+    {
+      name: 'Cardiovascular',
+      drugs: 'Atorvastatin, Amlodipine, Losartan, Metoprolol, Clopidogrel',
+      description: 'Cardiovascular drugs from Pakistani manufacturers meet USP/BP pharmacopoeia standards with proven bioequivalence. Growing demand in the Middle East and Africa for affordable statins, antihypertensives, and anticoagulants makes this a high-growth export category.',
+    },
+    {
+      name: 'Anti-Diabetics',
+      drugs: 'Metformin, Glimepiride, Sitagliptin, Insulin analogs',
+      description: 'With diabetes prevalence rising across the Gulf states and Africa, Pakistani manufacturers supply cost-effective oral hypoglycemics and insulin formulations. Products comply with SFDA and DRAP quality standards for cross-border trade.',
+    },
+    {
+      name: 'Analgesics & NSAIDs',
+      drugs: 'Paracetamol, Ibuprofen, Diclofenac, Naproxen, Tramadol',
+      description: 'Pain management products form a reliable export category with consistent demand. Pakistani manufacturers produce these essential medicines across multiple dosage forms including tablets, capsules, syrups, and injectable formats.',
+    },
+    {
+      name: 'Gastrointestinal',
+      drugs: 'Omeprazole, Esomeprazole, Domperidone, Ranitidine alternatives',
+      description: 'Proton pump inhibitors and GI medications manufactured in Pakistan serve both regional and international markets. WHO-GMP certified facilities ensure compliance with importing country requirements across the MENA region.',
+    },
+    {
+      name: 'Respiratory',
+      drugs: 'Salbutamol, Montelukast, Cetirizine, Fluticasone, Budesonide',
+      description: 'Respiratory medications including bronchodilators, antihistamines, and corticosteroids are produced by Pakistani manufacturers with DRAP-GMP certification. Rising air quality concerns in developing markets drive consistent export demand.',
+    },
+  ];
 
   return (
-    <div>
+    <main>
+      <title>PMX Pharma Exchange &mdash; Pakistan&apos;s B2B Pharmaceutical Export Marketplace</title>
+      <meta name="description" content="Pakistan's first compliance-linked B2B pharmaceutical export marketplace. Browse 200+ DRAP-certified products from quality-scored manufacturers. WHO-GMP verified. Escrow-protected transactions." />
+      <link rel="canonical" href="https://pmexchange.pk/marketplace" />
+      <link rel="preload" as="image" href="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=1920&q=80&fit=crop" />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       {/* ===== HERO ===== */}
-      <section style={{
+      <section aria-label="Hero" style={{
         background: '#0F172A',
         position: 'relative',
         overflow: 'hidden',
@@ -236,7 +318,7 @@ export default function MarketplaceLanding() {
       </section>
 
       {/* ===== CATEGORIES ===== */}
-      <section style={{ padding: '80px 32px', background: '#FFFFFF' }}>
+      <section aria-label="Browse by Category" style={{ padding: '80px 32px', background: '#FFFFFF' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <h2 style={{
@@ -328,7 +410,7 @@ export default function MarketplaceLanding() {
       </section>
 
       {/* ===== FEATURED PRODUCTS ===== */}
-      <section style={{ padding: '80px 32px', background: '#F8FAFC' }}>
+      <section aria-label="Featured Products" style={{ padding: '80px 32px', background: '#F8FAFC' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 40, flexWrap: 'wrap', gap: 16 }}>
             <div>
@@ -374,7 +456,7 @@ export default function MarketplaceLanding() {
       </section>
 
       {/* ===== WHY PMX ===== */}
-      <section id="why-pmx" ref={whySection.ref} style={{ padding: '100px 32px', background: '#FFFFFF' }}>
+      <section id="why-pmx" aria-label="Why PMX" ref={whySection.ref} style={{ padding: '100px 32px', background: '#FFFFFF' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 60 }}>
             <h2 style={{
@@ -474,7 +556,7 @@ export default function MarketplaceLanding() {
       </section>
 
       {/* ===== HOW IT WORKS ===== */}
-      <section id="how-it-works" ref={howSection.ref} style={{ padding: '100px 32px', background: '#F8FAFC' }}>
+      <section id="how-it-works" aria-label="How It Works" ref={howSection.ref} style={{ padding: '100px 32px', background: '#F8FAFC' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 60 }}>
             <h2 style={{
@@ -552,7 +634,7 @@ export default function MarketplaceLanding() {
       </section>
 
       {/* ===== TOP MANUFACTURERS ===== */}
-      <section style={{ padding: '80px 32px', background: '#FFFFFF' }}>
+      <section aria-label="Top Manufacturers" style={{ padding: '80px 32px', background: '#FFFFFF' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <h2 style={{
@@ -656,7 +738,7 @@ export default function MarketplaceLanding() {
       </section>
 
       {/* ===== CTA BANNER ===== */}
-      <section style={{
+      <section aria-label="Call to Action" style={{
         padding: '80px 32px',
         background: '#0F172A',
         position: 'relative',
@@ -727,6 +809,152 @@ export default function MarketplaceLanding() {
         </div>
       </section>
 
+      {/* ===== PAKISTAN'S PHARMACEUTICAL EXPORT INDUSTRY ===== */}
+      <section aria-label="Pakistan Pharmaceutical Export Industry" style={{ padding: '80px 32px', background: '#FFFFFF' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+          <h2 style={{
+            fontFamily: "'Instrument Serif', serif",
+            fontSize: 'clamp(28px, 4vw, 40px)',
+            fontWeight: 400,
+            color: '#0F172A',
+            marginBottom: 24,
+            textAlign: 'center',
+          }}>
+            Pakistan&apos;s Pharmaceutical Export Industry
+          </h2>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, color: '#64748B', lineHeight: 1.8 }}>
+            <p style={{ marginBottom: 20 }}>
+              Pakistan&apos;s pharmaceutical industry is valued at over $2.7 billion, with more than 800 manufacturers producing a wide range of generic and branded medications. The country ranks among the top pharmaceutical producers in the developing world, with growing export volumes to the Middle East, Africa, Central Asia, and Southeast Asia. Pakistani pharmaceutical exports have grown at a compound annual rate of 12% over the past five years, driven by competitive pricing and improving quality standards.
+            </p>
+            <p style={{ marginBottom: 20 }}>
+              Despite this growth, the industry faces persistent challenges in international markets: inconsistent regulatory compliance documentation, fragmented quality assurance systems, difficulty navigating destination-country certification requirements (WHO-GMP, SFDA, NMPA, EMA), and a lack of transparent pricing mechanisms. Buyers in importing countries often struggle to verify manufacturer credentials, batch quality data, and export eligibility.
+            </p>
+            <p>
+              PMX Pharma Exchange bridges these gaps by providing a compliance-linked marketplace where every manufacturer maintains a real-time Composite Quality Score (CQS), certifications are independently validated, and all transactions are protected through escrow services. By combining regulatory technology with B2B commerce, PMX enables Pakistani manufacturers to reach global buyers with verifiable quality credentials and transparent pricing.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== THERAPEUTIC CATEGORIES ===== */}
+      <section aria-label="Therapeutic Categories Available" style={{ padding: '80px 32px', background: '#F8FAFC' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <h2 style={{
+              fontFamily: "'Instrument Serif', serif",
+              fontSize: 'clamp(28px, 4vw, 40px)',
+              fontWeight: 400,
+              color: '#0F172A',
+              marginBottom: 8,
+            }}>
+              Therapeutic Categories Available
+            </h2>
+            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, color: '#64748B' }}>
+              Export-ready pharmaceutical products across major therapeutic areas
+            </p>
+          </div>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+            gap: 16,
+          }}>
+            {therapeuticCategories.map(cat => (
+              <div key={cat.name} style={{
+                background: '#FFFFFF',
+                border: '1px solid #E2E8F0',
+                borderRadius: 16,
+                overflow: 'hidden',
+                transition: 'box-shadow 0.3s ease',
+              }}>
+                <button
+                  onClick={() => setExpandedCategory(expandedCategory === cat.name ? null : cat.name)}
+                  style={{
+                    width: '100%',
+                    padding: '24px 28px',
+                    border: 'none',
+                    background: 'transparent',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <div>
+                    <div style={{
+                      fontFamily: "'Instrument Serif', serif",
+                      fontSize: 20,
+                      color: '#0F172A',
+                      marginBottom: 4,
+                    }}>
+                      {cat.name}
+                    </div>
+                    <div style={{
+                      fontFamily: "'DM Sans', sans-serif",
+                      fontSize: 13,
+                      color: '#1D9E75',
+                      fontWeight: 500,
+                    }}>
+                      {cat.drugs}
+                    </div>
+                  </div>
+                  <svg
+                    width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="2"
+                    strokeLinecap="round" strokeLinejoin="round"
+                    aria-hidden="true"
+                    style={{
+                      flexShrink: 0,
+                      transform: expandedCategory === cat.name ? 'rotate(180deg)' : 'rotate(0)',
+                      transition: 'transform 0.2s ease',
+                    }}
+                  >
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </button>
+                {expandedCategory === cat.name && (
+                  <div style={{
+                    padding: '0 28px 24px',
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: 14,
+                    color: '#64748B',
+                    lineHeight: 1.7,
+                    borderTop: '1px solid #F1F5F9',
+                    paddingTop: 20,
+                  }}>
+                    {cat.description}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== FAQ SECTION ===== */}
+      <section aria-label="Frequently Asked Questions" style={{ padding: '80px 32px', background: '#FFFFFF' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <h2 style={{
+              fontFamily: "'Instrument Serif', serif",
+              fontSize: 'clamp(28px, 4vw, 40px)',
+              fontWeight: 400,
+              color: '#0F172A',
+              marginBottom: 8,
+            }}>
+              Frequently Asked Questions
+            </h2>
+            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, color: '#64748B' }}>
+              Common questions about pharmaceutical sourcing on PMX
+            </p>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {faqData.map((faq, i) => (
+              <FaqItem key={i} question={faq.question} answer={faq.answer} />
+            ))}
+          </div>
+        </div>
+      </section>
+
       <style jsx global>{`
         @media (max-width: 900px) {
           .mk-connect-line {
@@ -744,14 +972,14 @@ export default function MarketplaceLanding() {
           }
         }
       `}</style>
-    </div>
+    </main>
   );
 }
 
 // ===== PRODUCT CARD =====
 function ProductCard({ product, index }: { product: typeof products[0]; index: number }) {
   return (
-    <div
+    <article
       style={{
         background: '#FFFFFF',
         border: '1px solid #E2E8F0',
@@ -885,6 +1113,70 @@ function ProductCard({ product, index }: { product: typeof products[0]; index: n
           Request Quote
         </Link>
       </div>
+    </article>
+  );
+}
+
+// ===== FAQ ITEM =====
+function FaqItem({ question, answer }: { question: string; answer: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{
+      background: '#FFFFFF',
+      border: '1px solid #E2E8F0',
+      borderRadius: 14,
+      overflow: 'hidden',
+    }}>
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          width: '100%',
+          padding: '20px 24px',
+          border: 'none',
+          background: 'transparent',
+          cursor: 'pointer',
+          textAlign: 'left',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: 16,
+        }}
+      >
+        <span style={{
+          fontFamily: "'DM Sans', sans-serif",
+          fontSize: 15,
+          fontWeight: 600,
+          color: '#0F172A',
+          lineHeight: 1.4,
+        }}>
+          {question}
+        </span>
+        <svg
+          width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="2"
+          strokeLinecap="round" strokeLinejoin="round"
+          aria-hidden="true"
+          style={{
+            flexShrink: 0,
+            transform: open ? 'rotate(180deg)' : 'rotate(0)',
+            transition: 'transform 0.2s ease',
+          }}
+        >
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+      {open && (
+        <div style={{
+          padding: '0 24px 20px',
+          fontFamily: "'DM Sans', sans-serif",
+          fontSize: 14,
+          color: '#64748B',
+          lineHeight: 1.7,
+          borderTop: '1px solid #F1F5F9',
+          paddingTop: 16,
+        }}>
+          {answer}
+        </div>
+      )}
     </div>
   );
 }

@@ -60,8 +60,55 @@ export default function SellerProfilePage() {
   const sellerProducts = getProductsByManufacturer(sellerId);
   const cqsColor = getCqsColor(manufacturer.cqsBadge);
 
+  const sellerJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: manufacturer.name,
+    url: `https://pmexchange.pk/marketplace/seller/${manufacturer.id}`,
+    address: { '@type': 'PostalAddress', addressLocality: manufacturer.city, addressCountry: 'PK' },
+    description: `${manufacturer.name} - ${manufacturer.tierLabel} pharmaceutical manufacturer in ${manufacturer.city}, Pakistan. CQS: ${manufacturer.cqs}. ${manufacturer.certifications.join(', ')} certified.`,
+    hasCredential: manufacturer.certifications.map(cert => ({
+      '@type': 'EducationalOccupationalCredential',
+      credentialCategory: cert,
+      recognizedBy: { '@type': 'Organization', name: cert.includes('WHO') ? 'World Health Organization' : 'DRAP Pakistan' },
+    })),
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: manufacturer.cqs,
+      bestRating: 100,
+      worstRating: 0,
+      ratingCount: manufacturer.ordersCompleted || 1,
+    },
+  };
+
+  const sellerBreadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Marketplace', item: 'https://pmexchange.pk/marketplace' },
+      { '@type': 'ListItem', position: 2, name: manufacturer.name },
+    ],
+  };
+
+  const sellerTitle = `${manufacturer.name} \u2014 ${manufacturer.tierLabel} Pharmaceutical Manufacturer | PMX Pharma Exchange`;
+  const sellerDescription = `${manufacturer.name} is a ${manufacturer.tierLabel} pharmaceutical manufacturer in ${manufacturer.city}, Pakistan. CQS Score: ${manufacturer.cqs}. ${manufacturer.certifications.join(', ')} certified. ${sellerProducts.length} products listed.`;
+
   return (
-    <div style={{ background: '#F8FAFC', minHeight: 'calc(100vh - 72px)' }}>
+    <main style={{ background: '#F8FAFC', minHeight: 'calc(100vh - 72px)' }}>
+      <title>{sellerTitle}</title>
+      <meta name="description" content={sellerDescription} />
+      <meta property="og:title" content={sellerTitle} />
+      <meta property="og:description" content={sellerDescription} />
+      <meta property="og:url" content={`https://pmexchange.pk/marketplace/seller/${manufacturer.id}`} />
+      <link rel="canonical" href={`https://pmexchange.pk/marketplace/seller/${manufacturer.id}`} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(sellerJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(sellerBreadcrumbJsonLd) }}
+      />
       {/* ===== HEADER ===== */}
       <div style={{
         background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
@@ -92,7 +139,7 @@ export default function SellerProfilePage() {
 
         <div style={{ maxWidth: 1320, margin: '0 auto', position: 'relative' }}>
           {/* Breadcrumbs */}
-          <nav style={{
+          <nav aria-label="Breadcrumb" style={{
             display: 'flex',
             alignItems: 'center',
             gap: 8,
@@ -102,7 +149,7 @@ export default function SellerProfilePage() {
             color: '#64748B',
           }}>
             <Link href="/marketplace" style={{ color: '#64748B', textDecoration: 'none' }}>Marketplace</Link>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
             <span style={{ color: '#94A3B8', fontWeight: 500 }}>{manufacturer.name}</span>
           </nav>
 
@@ -541,6 +588,6 @@ export default function SellerProfilePage() {
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
-    </div>
+    </main>
   );
 }

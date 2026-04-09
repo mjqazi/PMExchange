@@ -74,11 +74,93 @@ export default function ProductDetailPage() {
   const cqsColor = getCqsColor(product.cqsBadge);
   const mfrCqsColor = manufacturer ? getCqsColor(manufacturer.cqsBadge) : '#94A3B8';
 
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: `${product.inn} ${product.strength}`,
+    description: `${product.inn} ${product.strength} ${product.dosageForm} by ${product.manufacturerName}. DRAP registered. ${product.certifications.join(', ')} certified.`,
+    brand: { '@type': 'Brand', name: product.manufacturerName },
+    manufacturer: { '@type': 'Organization', name: product.manufacturerName },
+    offers: {
+      '@type': 'AggregateOffer',
+      priceCurrency: 'USD',
+      lowPrice: product.priceLow,
+      highPrice: product.priceHigh,
+      offerCount: 1,
+      availability: 'https://schema.org/InStock',
+    },
+    category: product.category,
+    sku: product.drapRegNo,
+  };
+
+  const drugJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Drug',
+    name: product.inn,
+    alternateName: product.brandName,
+    activeIngredient: product.inn,
+    dosageForm: product.dosageForm,
+    drugUnit: product.strength,
+    manufacturer: {
+      '@type': 'Organization',
+      name: product.manufacturerName,
+      address: { '@type': 'PostalAddress', addressCountry: 'PK' },
+    },
+    availableStrength: {
+      '@type': 'DrugStrength',
+      activeIngredient: product.inn,
+      strengthValue: product.strength.replace(/[^0-9.]/g, ''),
+      strengthUnit: product.strength.replace(/[0-9.]/g, '').trim(),
+    },
+    prescriptionStatus: 'OTC',
+    isAvailableGenerically: true,
+    offers: {
+      '@type': 'AggregateOffer',
+      priceCurrency: 'USD',
+      lowPrice: product.priceLow,
+      highPrice: product.priceHigh,
+      availability: 'https://schema.org/InStock',
+      seller: { '@type': 'Organization', name: product.manufacturerName },
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Marketplace', item: 'https://pmexchange.pk/marketplace' },
+      { '@type': 'ListItem', position: 2, name: product.category, item: `https://pmexchange.pk/marketplace/search?q=${encodeURIComponent(product.category)}` },
+      { '@type': 'ListItem', position: 3, name: `${product.inn} ${product.strength}` },
+    ],
+  };
+
+  const pageTitle = `${product.inn} ${product.strength} ${product.dosageForm} by ${product.manufacturerName} | PMX Pharma Exchange`;
+  const pageDescription = `Buy ${product.inn} ${product.strength} ${product.dosageForm} from ${product.manufacturerName}, ${manufacturer?.city || 'Pakistan'}. DRAP Reg: ${product.drapRegNo}. ${product.certifications.join(', ')} certified. Price: ${product.priceRange}. MOQ: ${product.moq}.`;
+
   return (
-    <div style={{ background: '#F8FAFC', minHeight: 'calc(100vh - 72px)' }}>
+    <main style={{ background: '#F8FAFC', minHeight: 'calc(100vh - 72px)' }}>
+      <title>{pageTitle}</title>
+      <meta name="description" content={pageDescription} />
+      <meta property="og:title" content={pageTitle} />
+      <meta property="og:description" content={pageDescription} />
+      <meta property="og:url" content={`https://pmexchange.pk/marketplace/product/${product.id}`} />
+      <meta property="og:type" content="product" />
+      <link rel="canonical" href={`https://pmexchange.pk/marketplace/product/${product.id}`} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(drugJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '28px 32px' }}>
         {/* Breadcrumbs */}
-        <nav style={{
+        <nav aria-label="Breadcrumb" style={{
           display: 'flex',
           alignItems: 'center',
           gap: 8,
@@ -88,11 +170,11 @@ export default function ProductDetailPage() {
           color: '#94A3B8',
         }}>
           <Link href="/marketplace" style={{ color: '#94A3B8', textDecoration: 'none', transition: 'color 0.2s' }}>Marketplace</Link>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" strokeWidth="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
           <Link href={`/marketplace/search?q=${encodeURIComponent(product.category)}`} style={{ color: '#94A3B8', textDecoration: 'none' }}>
             {product.category}
           </Link>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" strokeWidth="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
           <span style={{ color: '#64748B', fontWeight: 500 }}>{product.inn} {product.strength}</span>
         </nav>
 
@@ -627,6 +709,6 @@ export default function ProductDetailPage() {
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
-    </div>
+    </main>
   );
 }
