@@ -2,6 +2,18 @@
 
 ---
 
+## TODO — READ AND DISPLAY ON EVERY SESSION START
+
+**On every new conversation in this project, read `TODO.md` and display the pending items to the user.**
+
+```
+cat TODO.md
+```
+
+Show the urgent items first, then a summary count of remaining items per section.
+
+---
+
 ## MANDATORY: READ BEFORE WRITING ANY CODE
 
 ### NO DUPLICATE CODE - SEARCH BEFORE CREATING
