@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     // Verify password
     const validPassword = await comparePassword(password, user.password_hash)
     if (!validPassword) {
-      const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '0.0.0.0'
+      const ipAddress = (request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '0.0.0.0').split(',')[0].trim()
       await handleLoginFailure(user.id, ipAddress)
       return NextResponse.json(
         { success: false, error: { code: 'INVALID_CREDENTIALS', message: 'Invalid email or password' } },
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     const { accessToken, refreshToken } = await createTokens(user.id)
 
     // Create session
-    const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '0.0.0.0'
+    const ipAddress = (request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '0.0.0.0').split(',')[0].trim()
     const userAgent = request.headers.get('user-agent') || 'unknown'
     await createSession(user.id, refreshToken, ipAddress, userAgent)
 

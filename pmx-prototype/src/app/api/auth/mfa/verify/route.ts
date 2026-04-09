@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     if (user_id) {
       const { accessToken, refreshToken } = await createTokens(userId)
 
-      const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '0.0.0.0'
+      const ipAddress = (request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '0.0.0.0').split(',')[0].trim()
       const userAgent = request.headers.get('user-agent') || 'unknown'
       await createSession(userId, refreshToken, ipAddress, userAgent)
 

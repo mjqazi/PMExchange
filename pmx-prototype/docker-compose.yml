@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  pmx-app:
+    build: .
+    container_name: pmx-app
+    restart: unless-stopped
+    ports:
+      - "5555:5555"
+    env_file:
+      - .env.production
+    depends_on:
+      pmx-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:5555/marketplace"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  pmx-db:
+    image: postgres:18-alpine
+    container_name: pmx-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pmx_production
+      POSTGRES_USER: pmx_user
+      POSTGRES_PASSWORD: PMXProd2026SecureDB
+    volumes:
+      - pmx_pgdata:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pmx_user -d pmx_production"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pmx_pgdata:
